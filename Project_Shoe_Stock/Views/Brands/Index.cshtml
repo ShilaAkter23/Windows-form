@@ -1,0 +1,57 @@
+﻿@model IEnumerable<Project_Shoe_Stock.Models.Brand>
+@{
+    ViewBag.Title = "Index";
+}
+
+<h2 style="text-align:center;color:red;"><u>Brand list</u></h2>
+<div>
+    <h4>To @Html.ActionLink("Create", "Create", "Brands", new { }, new { @class = "btn btn-info" }) New Brand</h4>
+</div>
+<div>
+    <table class="table table-bordered">
+        <thead>
+            <tr>
+                <td>Brand Name</td>
+                <td></td>
+
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var b in Model)
+            {
+                <tr>
+                    <td>@b.BrandName</td>
+                    <td>
+                        @Html.ActionLink("Edit", "Edit", "Brands", new { id = b.BrandId }, new { @class = "btn btn-primary btn-sm" })
+                        <button data-pk="@b.BrandId" class="btn btn-danger btn-sm del">Delete</button>
+                    </td>
+                </tr>
+
+            }
+        </tbody>
+    </table>
+
+</div>
+@section scripts {
+    <script src="~/Scripts/jquery-3.7.1.js"></script>
+    <script>
+        $(".del").click(function () {
+            var id = $(this).data("pk");
+            var trP = $(this).closest('tr');
+            var trS = trP.next();
+            if (confirm("Are you sure to delete?\nProduct with sales will be deleted.")) {
+                $.ajax({
+                    url: "/Brands/Delete/" + id,
+                    method: "post",
+                    dataType: "json",
+                    success: r => {
+                        if (r.success == true) {
+                            trP.remove();
+                            trS.remove();
+                        }
+                    }
+                })
+            }
+        });
+    </script>
+    }
